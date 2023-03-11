@@ -19,6 +19,26 @@ function Box({ value, onPress, highlighted, disabled }) {
 
 // Array(9).fill(null) = [null,null,null,null,null,null,null,null,null,]
 
+function checkWinner(board, player) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  return lines.find(([a, b, c]) => {
+    if (board[a] !== null && board[a] === board[b] && board[a] === board[c]) {
+      return true;
+    }
+    return false;
+  });
+}
+
 function App() {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -29,7 +49,15 @@ function App() {
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
-    setCurrentPlayer((prev) => (prev === "X" ? "O" : "X"));
+
+    const winnerLine = checkWinner(newBoard);
+    if (winnerLine) {
+      setHighlighted(winnerLine);
+      setWinner(currentPlayer);
+      alert("$currentPlayer");
+    } else {
+      setCurrentPlayer((prev) => (prev === "X" ? "O" : "X"));
+    }
   };
 
   const getBox = (index) => (
